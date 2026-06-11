@@ -1,0 +1,41 @@
+#!/bin/sh
+
+draw() {
+    clear
+
+    cols=$(tput cols)
+    art_width=77
+    pad=$(( (cols - art_width) / 2 ))
+
+    while IFS= read -r line; do
+        printf "%*s%s\n" "$pad" "" "$line"
+    done <<'EOF'
+              _           _ _ _
+ _____      _(_)_ __   __| | (_)_ __   __ _    __ ___      ____ _ _   _
+/ __\ \ /\ / / | '_ \ / _` | | | '_ \ / _` |  / _` \ \ /\ / / _` | | | |
+\__ \\ V  V /| | | | | (_| | | | | | | (_| | | (_| |\ V  V / (_| | |_| |
+|___/ \_/\_/ |_|_| |_|\__,_|_|_|_|_|_|_|_,_|  \__,_| \_/\_/ \__,_|\__, |
+                                      |___/                       |___/
+EOF
+}
+
+cleanup() {
+    stty echo
+    printf '\e[?25h'
+    clear
+}
+
+trap cleanup EXIT
+
+stty -echo
+printf '\e[?25l'
+
+draw
+
+while true; do
+    read -r -n 1 key
+
+    [ "$key" = "q" ] && break
+
+    draw
+done
